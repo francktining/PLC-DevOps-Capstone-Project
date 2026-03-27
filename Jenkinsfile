@@ -62,10 +62,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Image pushed: ${IMAGE_NAME}:latest"
+            echo "Image pushed: ${IMAGE_NAME}:latest"
         }
         failure {
-            echo "❌ Pipeline failed"
+            echo "Pipeline failed"
         }
     }
 }
