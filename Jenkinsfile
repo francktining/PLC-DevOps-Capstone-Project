@@ -9,7 +9,7 @@ pipeline {
         IMAGE_TAG = "latest"
 
         // SonarQube
-        SONARQUBE_SERVER = 'sonarqube-creds'
+        SONARQUBE_SERVER = 'sonarqube-server'
         SONAR_PROJECT_KEY = 'PLC-project'
         SONAR_PROJECT_NAME = 'PLC-project'
     }
