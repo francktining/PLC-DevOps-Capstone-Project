@@ -16,13 +16,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                // Pull code from GitHub using credentials
-                git url: 'https://github.com/francktining/PLC-DevOps-Capstone-Project.git',
-                    credentialsId: 'github-creds'
-            }
-        }
 
         stage('SonarQube Analysis') {
             steps {
