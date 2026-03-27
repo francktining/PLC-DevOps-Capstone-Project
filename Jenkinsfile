@@ -1,32 +1,29 @@
 pipeline {
     agent any
 
-    tools {
-        // SonarScanner installed via Jenkins Global Tool Configuration
-        sonarScanner 'sonar-scanner'
-    }
-
     environment {
-        // Docker Hub
-        DOCKER_HUB_CREDENTIALS = 'dockerhub-creds'
-        DOCKER_HUB_USERNAME = 'francktining'
-        IMAGE_NAME = "flask-app"
-        IMAGE_TAG = "latest"
-
-        // SonarQube
-        SONARQUBE_SERVER = 'SonarQube'   
-        SONAR_PROJECT_KEY = 'PLC-project'
+        IMAGE_NAME = 'francktining/flask-app'
+        DOCKER_CREDENTIALS = 'dockerhub-creds'
+        SONARQUBE_SERVER = 'SonarQube'
+        PROJECT_KEY = 'PLC-project'
     }
 
     stages {
 
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/francktining/PLC-DevOps-Capstone-Project.git',
+                    credentialsId: 'github-creds'
+            }
+        }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh """
                     sonar-scanner \
-                      -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                      -Dsonar.projectKey=${PROJECT_KEY} \
                       -Dsonar.sources=.
                     """
                 }
@@ -43,18 +40,21 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}")
-                }
+                sh "docker build -t ${IMAGE_NAME}:latest ."
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-                        docker.image("${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}").push()
-                    }
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKER_CREDENTIALS}",
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh """
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    docker push ${IMAGE_NAME}:latest
+                    """
                 }
             }
         }
@@ -62,10 +62,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ SUCCESS: Image pushed -> ${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "✅ Image pushed: ${IMAGE_NAME}:latest"
         }
         failure {
-            echo "❌ Pipeline failed!"
+            echo "❌ Pipeline failed"
         }
     }
 }
