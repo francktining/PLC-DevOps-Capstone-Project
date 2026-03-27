@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'francktining/flask-app'
+        DOCKER_CREDENTIALS = 'dockerhub-creds'
+        SONARQUBE_SERVER = 'SonarQube'
+        PROJECT_KEY = 'PLC-project'
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -40,7 +47,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: "dockerhub-creds",
+                    credentialsId: "${DOCKER_CREDENTIALS}",
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
