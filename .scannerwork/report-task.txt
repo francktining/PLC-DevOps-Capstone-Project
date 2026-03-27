@@ -1,0 +1,6 @@
+projectKey=PLC-project
+serverUrl=http://localhost:9000
+serverVersion=26.1.0.118079
+dashboardUrl=http://localhost:9000/dashboard?id=PLC-project
+ceTaskId=4038f84f-c7da-4f3a-b1b8-7b1587ca2d28
+ceTaskUrl=http://localhost:9000/api/ce/task?id=4038f84f-c7da-4f3a-b1b8-7b1587ca2d28
