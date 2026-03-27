@@ -9,7 +9,7 @@ pipeline {
           script {
             def scannerHome = tool 'sonar-scanner'
             sh """
-              ${scannerHome}/bin/sonar-scanner \
+              ${scannerHome}/usr/local/bin/sonar-scanner \
                 -Dsonar.projectKey=PLC-project \
                 -Dsonar.sources=. \
                 -Dsonar.host.url=http://localhost:9000
