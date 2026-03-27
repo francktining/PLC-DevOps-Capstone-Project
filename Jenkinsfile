@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'francktining/flask-app'
-        DOCKER_CREDENTIALS = 'dockerhub-creds'
-        SONARQUBE_SERVER = 'SonarQube'
-        PROJECT_KEY = 'PLC-project'
-    }
 
     stages {
 
